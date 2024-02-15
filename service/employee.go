@@ -40,6 +40,23 @@ func GetAllEmployees(ctx *gin.Context) resources.ServiceResult {
 	}
 }
 
+func GetEmployeeById(ctx *gin.Context, employeeId int) resources.ServiceResult {
+	result, err := db.GetEmployeeById(ctx, employeeId)
+	if err != nil {
+		return resources.ServiceResult{
+			Code:              http.StatusInternalServerError,
+			ServiceResultData: resources.ServiceResultData{},
+			IsError:           true,
+			Error:             resources.ServiceError{ErrorMsg: err.Error()},
+		}
+	}
+	return resources.ServiceResult{
+		Code:              http.StatusOK,
+		ServiceResultData: resources.ServiceResultData{Data: result},
+		IsError:           false,
+	}
+}
+
 func DeleteEmployee(ctx *gin.Context, employeeId int) error {
 	return db.DeleteEmployee(ctx, employeeId)
 }

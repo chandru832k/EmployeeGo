@@ -13,5 +13,6 @@ func EmployeeRoutes(router *gin.RouterGroup) {
 		employeeGroup.PUT("/:employee_id", controller.UpdateEmployee)
 		employeeGroup.DELETE("/:employee_id", controller.DeleteEmployee)
 		employeeGroup.GET("/", controller.GetAllEmployees)
+		employeeGroup.GET("/:employee_id", controller.GetEmployeeById)
 	}
 }

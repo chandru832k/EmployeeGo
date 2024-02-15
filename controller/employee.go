@@ -62,6 +62,24 @@ func GetAllEmployees(c *gin.Context) {
 func GetEmployeeById(c *gin.Context) {
 	functionDesc := "Get Employee By Id Controller"
 	fmt.Println(functionDesc)
+
+	employeeId, err := strconv.Atoi(c.Param("employee_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Employee Id Not Found",
+		})
+		return
+	}
+
+	result :=  service.GetEmployeeById(c, employeeId)
+
+	if result.Code != http.StatusOK {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Error Fetching Employee Details",
+		})
+		return
+	}
+	c.JSON(http.StatusOK,  result.ServiceResultData.Data)
 }
 
 func UpdateEmployee(c *gin.Context) {

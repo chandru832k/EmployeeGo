@@ -4,6 +4,7 @@ import (
 	"context"
 	"employee/models"
 	"employee/resources"
+	"errors"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -54,6 +55,20 @@ func GetAllEmployees(ctx *gin.Context) ([]models.Employee, error) {
 		return nil, err
 	}
 
+	return result, nil
+}
+
+func GetEmployeeById(ctx *gin.Context, employeeId int) (models.Employee, error) {
+	result := models.Employee{}
+	queryPtr := DbClient.Debug().Table("employee").First(&result, employeeId)
+
+	if err := queryPtr.Error; err != nil {
+		fmt.Print("Error updating Employee Details | ", queryPtr.Error.Error())
+	}
+	if result.EmployeeId == 0 {
+		fmt.Print("Error finding Employee Details")
+		return result, errors.New("Error finding Employee Details") 
+	}
 	return result, nil
 }
 
