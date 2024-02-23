@@ -20,18 +20,19 @@ func NewEmployeeController(EmployeeService service.EmployeeService) EmployeeCont
 	}
 }
 
-func AddEmployee(c *gin.Context) {
-	ctx := c.Request.Context()
+func (ec *EmployeeController) AddEmployee(c *gin.Context) {
 	functionDesc := "Add Employee Controller"
 	fmt.Println(functionDesc)
-	fmt.Println(ctx)
 	// result := c
 	var input resources.AddEmployeeInput
 	err := c.BindJSON(&input)
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Error While Creating Employee",
+		})
 		return
 	}
-	employeeId := service.AddEmployee(ctx, input)
+	employeeId := ec.EmployeeService.AddEmployee(c, input)
 	if employeeId <= 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Error While Creating Employee",
@@ -44,11 +45,11 @@ func AddEmployee(c *gin.Context) {
 	})
 }
 
-func GetAllEmployees(c *gin.Context) {
+func (ec *EmployeeController) GetAllEmployees(c *gin.Context) {
 	functionDesc := "Get All Employees Controller"
 	fmt.Println(functionDesc)
 
-	result := service.GetAllEmployees(c)
+	result := ec.EmployeeService.GetAllEmployees(c)
 
 	if result.Code != http.StatusOK {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -59,7 +60,7 @@ func GetAllEmployees(c *gin.Context) {
 	c.JSON(http.StatusOK, result.ServiceResultData.Data)
 }
 
-func GetEmployeeById(c *gin.Context) {
+func (ec *EmployeeController) GetEmployeeById(c *gin.Context) {
 	functionDesc := "Get Employee By Id Controller"
 	fmt.Println(functionDesc)
 
@@ -71,7 +72,7 @@ func GetEmployeeById(c *gin.Context) {
 		return
 	}
 
-	result :=  service.GetEmployeeById(c, employeeId)
+	result := ec.EmployeeService.GetEmployeeById(c, employeeId)
 
 	if result.Code != http.StatusOK {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -79,10 +80,10 @@ func GetEmployeeById(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(http.StatusOK,  result.ServiceResultData.Data)
+	c.JSON(http.StatusOK, result.ServiceResultData.Data)
 }
 
-func UpdateEmployee(c *gin.Context) {
+func (ec *EmployeeController) UpdateEmployee(c *gin.Context) {
 	ctx := c.Request.Context()
 	functionDesc := "Update Employee Controller"
 	fmt.Println(functionDesc)
@@ -105,7 +106,7 @@ func UpdateEmployee(c *gin.Context) {
 		return
 	}
 
-	result := service.UpdateEmployee(c, employeeId, input)
+	result := ec.EmployeeService.UpdateEmployee(c, employeeId, input)
 
 	if result != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -119,7 +120,7 @@ func UpdateEmployee(c *gin.Context) {
 	// fmt.Println(result)
 }
 
-func DeleteEmployee(c *gin.Context) {
+func (ec *EmployeeController) DeleteEmployee(c *gin.Context) {
 	functionDesc := "Delete Employee Controller"
 	fmt.Println(functionDesc)
 
@@ -132,7 +133,7 @@ func DeleteEmployee(c *gin.Context) {
 		return
 	}
 
-	result := service.DeleteEmployee(c, employeeId)
+	result := ec.EmployeeService.DeleteEmployee(c, employeeId)
 
 	if result != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

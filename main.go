@@ -3,9 +3,10 @@ package main
 import (
 	"employee/config"
 	"employee/db"
-	"employee/server"
+	"employee/routes"
 	"fmt"
 )
+
 
 func main() {
 	config.InitializeEnv()
@@ -13,7 +14,5 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	result := db.NewEmployeeDao()
-	server.Start()
-	fmt.Println("result", result)
+	routes.StartServer()
 }
